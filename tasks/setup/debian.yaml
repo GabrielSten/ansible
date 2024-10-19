@@ -1,9 +1,58 @@
-- name: Install packages
+- name: Install required packages
   apt:
-    name: "{{ item }}"
+    name:
+      - zsh
+      - curl
+      - git
+      - tmux
     state: present
-  loop:
-    - zsh
-    - curl
-    - git
-    - tmux
+
+- name: Check if fzf is installed
+  command: command -v fzf
+  register: fzf_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Check if zoxide is installed
+  command: command -v zoxide
+  register: zoxide_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Clone fzf repository if not installed
+  git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: ~/.fzf
+    version: master
+    depth: 1
+  when: fzf_check.rc != 0 # Only clone if fzf is not found
+
+- name: Install fzf if not installed
+  command: ~/.fzf/install
+  args:
+    executable: /bin/bash
+  when: fzf_check.rc != 0 # Only run if fzf was just cloned
+
+- name: Install zoxide if not installed
+  command: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  args:
+    executable: /bin/bash
+  when: zoxide_check.rc != 0 # Only install if zoxide is not found
+
+- name: Check if fzf is in PATH
+  command: command -v fzf
+  register: fzf_check_final
+  changed_when: false
+
+- name: Check if zoxide is in PATH
+  command: command -v zoxide
+  register: zoxide_check_final
+  changed_when: false
+
+- name: Display fzf installation status
+  debug:
+    msg: "fzf is installed and found in PATH: {{ fzf_check_final.stdout | length > 0 }}"
+
+- name: Display zoxide installation status
+  debug:
+    msg: "zoxide is installed and found in PATH: {{ zoxide_check_final.stdout | length > 0 }}"
