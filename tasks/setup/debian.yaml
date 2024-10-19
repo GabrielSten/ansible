@@ -28,15 +28,11 @@
   when: fzf_check.rc != 0 # Only clone if fzf is not found
 
 - name: Install fzf if not installed
-  command: ~/.fzf/install
-  args:
-    executable: /bin/bash
+  shell: ~/.fzf/install
   when: fzf_check.rc != 0 # Only run if fzf was just cloned
 
 - name: Install zoxide if not installed
-  command: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-  args:
-    executable: /bin/bash
+  shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   when: zoxide_check.rc != 0 # Only install if zoxide is not found
 
 - name: Check if fzf is in PATH
