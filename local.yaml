@@ -1,5 +1,5 @@
-- hosts: localhost
-  name: Gabe's playbook
+- name: Gabe's playbook
+  hosts: localhost
   gather_facts: True
   tasks:
     - name: macOS tasks
