@@ -1,0 +1,11 @@
+- hosts: localhost
+  tasks:
+    - name: Install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - zsh
+        - curl
+        - git
+        - tmux

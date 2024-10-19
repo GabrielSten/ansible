@@ -1,0 +1,40 @@
+- name: Ensures taps are present via homebrew
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - hashicorp/tap
+
+- name: Ensures packages are present via homebrew cask
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+    install_options: "appdir=/Applications"
+  with_items:
+    - visual-studio-code
+    - spotify
+    - alacritty
+    - arc
+    - blender
+    - docker
+    - zed
+
+- name: Ensures packages are present via homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    path: "/Applications"
+    state: present
+  with_items:
+    - openssl
+    - wget
+    - kubernetes-cli
+    - fzf
+    - helm
+    - kind
+    - gnupg
+    - k9s
+    - nvm
+    - zoxide
+    - zsh-completions
+  tags:
+    - packages
