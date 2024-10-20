@@ -7,10 +7,9 @@
       - tmux
     state: present
 
-- name: Check if fzf is installed
-  command: command -v fzf
+- name: Check if fzf is in PATH using which
+  command: which fzf
   register: fzf_check
-  changed_when: false
   ignore_errors: yes
 
 - name: Check if zoxide is installed
