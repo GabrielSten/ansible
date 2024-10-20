@@ -35,7 +35,7 @@
   when: zoxide_check.rc != 0 # Only install if zoxide is not found
 
 - name: Check if fzf is in PATH
-  command: command -v fzf
+  command: which fzf
   register: fzf_check_final
   changed_when: false
 
