@@ -39,11 +39,6 @@
   shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   when: zoxide_check.rc != 0 # Only install if zoxide is not found
 
-- name: Check if zoxide is in PATH
-  command: command -v zoxide
-  register: zoxide_check_final
-  changed_when: false
-
 - name: Display fzf installation status
   debug:
     msg: "fzf is installed and found in PATH: {{ fzf_check_final.stdout | length > 0 }}"
