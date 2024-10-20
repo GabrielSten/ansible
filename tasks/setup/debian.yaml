@@ -38,11 +38,3 @@
 - name: Install zoxide if not installed
   shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   when: zoxide_check.rc != 0 # Only install if zoxide is not found
-
-- name: Display fzf installation status
-  debug:
-    msg: "fzf is installed and found in PATH: {{ fzf_check_final.stdout | length > 0 }}"
-
-- name: Display zoxide installation status
-  debug:
-    msg: "zoxide is installed and found in PATH: {{ zoxide_check_final.stdout | length > 0 }}"
