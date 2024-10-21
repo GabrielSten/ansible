@@ -18,7 +18,7 @@
     version: main
 
 - name: Stow dotfiles
-  shell: cd $HOME/dotfiles
+  shell: cd $HOME/dotfiles && stow .
 
 - name: Change shell to zsh
   shell: chsh -s $(which zsh)
