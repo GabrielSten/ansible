@@ -1,6 +1,7 @@
 - name: Gabe's playbook
   hosts: localhost
   gather_facts: True
+  become: True
 
   pre_tasks:
     - name: Update Apt
@@ -11,6 +12,14 @@
         state: present
       when: ansible_facts['os_family'] == 'Debian'
 
+    - name: Update dnf
+      become: true
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+      when: ansible_facts['os_family'] == 'RedHat'
+
   tasks:
     - name: macOS tasks
       import_tasks: tasks/setup/mac.yaml
@@ -19,3 +28,7 @@
     - name: debian tasks
       import_tasks: tasks/setup/debian.yaml
       when: ansible_facts['os_family'] == 'Debian'
+
+    - name: debian tasks
+      import_tasks: tasks/setup/redhat.yaml
+      when: ansible_facts['os_family'] == 'RedHat'

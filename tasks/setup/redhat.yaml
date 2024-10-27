@@ -1,0 +1,61 @@
+- name: Install required packages
+  dnf:
+    name:
+      - zsh
+      - curl
+      - git
+      - tmux
+      - stow
+      - xclip
+    state: present
+
+- name: Check if dotfiles already exists
+  ansible.builtin.stat:
+    path: "{{ lookup('env', 'HOME') }}/dotfiles"
+  register: dotfiles_dir
+
+- name: Clone dotfiles
+  ansible.builtin.git:
+    repo: "https://github.com/GabrielSten/dotfiles.git"
+    dest: "{{ lookup('env', 'HOME') }}/dotfiles"
+    recursive: yes
+    update: yes
+    version: main
+  when: not dotfiles_dir.stat.exists
+
+- name: Stow dotfiles
+  shell: cd {{ lookup('env', 'HOME') }}/dotfiles && stow .
+  args:
+    executable: /bin/bash
+
+- name: Change shell to zsh
+  shell: chsh -s $(which zsh)
+  args:
+    executable: /bin/bash
+
+- name: Check if fzf is in PATH using which
+  command: which fzf
+  register: fzf_check
+  ignore_errors: yes
+
+- name: Check if zoxide is installed
+  command: command -v zoxide
+  register: zoxide_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Clone fzf repository if not installed
+  ansible.builtin.git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: "{{ lookup('env', 'HOME') }}/.fzf"
+    version: master
+    depth: 1
+  when: fzf_check.rc != 0 # Only clone if fzf is not found
+
+- name: Install fzf if not installed
+  shell: "{{ lookup('env', 'HOME') }}/.fzf/install --all"
+  when: fzf_check.rc != 0 # Only run if fzf was just cloned
+
+- name: Install zoxide if not installed
+  shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  when: zoxide_check.rc != 0 # Only install if zoxide is not found
