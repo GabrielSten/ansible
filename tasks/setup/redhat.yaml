@@ -8,6 +8,7 @@
       - stow
       - xclip
     state: present
+  become: true
 
 - name: Check if dotfiles already exists
   ansible.builtin.stat:
@@ -32,6 +33,7 @@
   shell: chsh -s $(which zsh)
   args:
     executable: /bin/bash
+  become: true
 
 - name: Check if fzf is in PATH using which
   command: which fzf
