@@ -7,7 +7,14 @@
       - git
       - tmux
       - stow
+      - vim
     state: present
+
+- name: Remove existing dotfiles directory if it exists
+  become: true
+  file:
+    path: "{{ lookup('env', 'HOME') }}/dotfiles"
+    state: absent
 
 - name: Clone dotfiles
   ansible.builtin.git:
